@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "957644601860",
+    "firebase_url": "https://webrtc-demo-6fa99-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "webrtc-demo-6fa99",
+    "storage_bucket": "webrtc-demo-6fa99.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957644601860:android:cfbdb46592ec579cf65351",
+        "android_client_info": {
+          "package_name": "com.example.webrtcdemo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0628hc9vhxATCyWat_yAdNOX7jMOP6Zg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
