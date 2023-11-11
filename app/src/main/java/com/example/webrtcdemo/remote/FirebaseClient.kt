@@ -52,7 +52,9 @@ class FirebaseClient {
             override fun onDataChange(snapshot: DataSnapshot) {
                 try {
                     val dataModel = gson.fromJson(snapshot.value.toString(), DataModel::class.java)
-                    newEventCallBack.onNewEventReceived(dataModel)
+                    dataModel?.let {
+                        newEventCallBack.onNewEventReceived(dataModel)
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
