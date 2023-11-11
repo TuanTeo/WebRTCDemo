@@ -2,6 +2,7 @@ package com.example.webrtcdemo.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.webrtcdemo.R
 import com.example.webrtcdemo.databinding.ActivityMainBinding
@@ -22,6 +23,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun initView() {
         binding.btnLogin.setOnClickListener {
+            login()
+        }
+    }
+
+    private fun login() {
+        val username = binding.edtLoginUserName.text.toString()
+        if (username.isNotEmpty()) {
             // login to firebase
             MainRepository.getInstance().login(
                 binding.edtLoginUserName.text.toString(),
@@ -31,7 +39,8 @@ class MainActivity : AppCompatActivity() {
                         startActivity(Intent(this@MainActivity, CallActivity::class.java))
                     }
                 })
+        } else {
+            Toast.makeText(applicationContext, "Please enter username!", Toast.LENGTH_SHORT).show()
         }
-
     }
 }
