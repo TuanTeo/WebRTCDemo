@@ -197,11 +197,11 @@ class WebRtcClient(
     }
 
     fun toggleVideo(isMuted: Boolean) {
-        localVideoTrack.setEnabled(isMuted)
+        localVideoTrack.setEnabled(!isMuted)
     }
 
     fun toggleAudio(isMuted: Boolean) {
-        localAudioTrack.setEnabled(isMuted)
+        localAudioTrack.setEnabled(!isMuted)
     }
 
     fun closeConnection() {
