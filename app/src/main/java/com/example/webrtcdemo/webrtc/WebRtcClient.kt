@@ -156,7 +156,7 @@ class WebRtcClient(
 
     fun answer(target: String) {
         try {
-            peerConnection.createOffer(object: SDPObserver() {
+            peerConnection.createAnswer(object: SDPObserver() {
                 override fun onCreateSuccess(p0: SessionDescription?) {
                     super.onCreateSuccess(p0)
                     peerConnection.setLocalDescription(

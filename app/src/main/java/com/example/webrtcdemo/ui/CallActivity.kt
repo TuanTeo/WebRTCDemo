@@ -1,6 +1,7 @@
 package com.example.webrtcdemo.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +28,7 @@ class CallActivity : AppCompatActivity(), MainRepository.Listener {
 
     private fun init() {
         binding.btnCall.setOnClickListener {
-            call()
+            startCall()
         }
 
         MainRepository.getInstance().initLocalView(binding.svrLocalView)
@@ -46,7 +47,7 @@ class CallActivity : AppCompatActivity(), MainRepository.Listener {
                         binding.groupCallRequest.visibility = View.GONE
                         binding.rlIncomingCall.visibility = View.GONE
                         binding.groupCallView.visibility = View.VISIBLE
-                        MainRepository.getInstance().startCall(model.target)
+                        MainRepository.getInstance().startCall(model.sender)
                     }
                 }
             }
@@ -72,7 +73,7 @@ class CallActivity : AppCompatActivity(), MainRepository.Listener {
         }
     }
 
-    private fun call() {
+    private fun startCall() {
         val targetUsername = binding.edtTargetUser.text.toString()
         if (targetUsername.isNotEmpty()) {
             // Start a call request
@@ -87,9 +88,11 @@ class CallActivity : AppCompatActivity(), MainRepository.Listener {
     }
 
     override fun onWebRtcConnected() {
-        binding.groupCallRequest.visibility = View.GONE
-        binding.rlIncomingCall.visibility = View.GONE
-        binding.groupCallView.visibility = View.VISIBLE
+        runOnUiThread {
+            binding.groupCallRequest.visibility = View.GONE
+            binding.rlIncomingCall.visibility = View.GONE
+            binding.groupCallView.visibility = View.VISIBLE
+        }
     }
 
     override fun onWebRtcClose() {

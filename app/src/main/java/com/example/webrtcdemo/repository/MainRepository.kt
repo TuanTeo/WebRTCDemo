@@ -114,14 +114,14 @@ class MainRepository private constructor() : WebRtcClient.Listener {
             override fun onNewEventReceived(model: DataModel) {
                 when (model.type) {
                     DataModelType.Offer -> {
-                        targetUsername = model.target
+                        targetUsername = model.sender
                         webRtcClient.onRemoteSessionReceived(
                             SessionDescription(SessionDescription.Type.OFFER, model.data)
                         )
-                        webRtcClient.answer(targetUsername)
+                        webRtcClient.answer(model.sender)
                     }
                     DataModelType.Answer -> {
-                        targetUsername = model.target
+                        targetUsername = model.sender
                         webRtcClient.onRemoteSessionReceived(
                             SessionDescription(SessionDescription.Type.ANSWER, model.data)
                         )
@@ -131,7 +131,7 @@ class MainRepository private constructor() : WebRtcClient.Listener {
                         webRtcClient.addIceCandidate(candidate)
                     }
                     DataModelType.StartCall -> {
-                        targetUsername = model.target
+                        targetUsername = model.sender
                         callBack.onNewEventReceived(model)
                     }
                 }
