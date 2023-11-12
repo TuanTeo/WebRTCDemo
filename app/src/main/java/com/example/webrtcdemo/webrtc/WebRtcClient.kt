@@ -1,6 +1,7 @@
 package com.example.webrtcdemo.webrtc
 
 import android.content.Context
+import android.media.AudioManager
 import com.example.webrtcdemo.utils.DataModel
 import com.example.webrtcdemo.utils.DataModelType
 import com.google.gson.Gson
@@ -36,8 +37,8 @@ class WebRtcClient(
     private var peerConnectionFactory: PeerConnectionFactory
     private val iceServer: MutableList<PeerConnection.IceServer> = arrayListOf()
     private lateinit var videoCapturer: CameraVideoCapturer
-    private lateinit var localVideoSource: VideoSource
-    private lateinit var localAudioSource: AudioSource
+    private var localVideoSource: VideoSource
+    private var localAudioSource: AudioSource
     private lateinit var localVideoTrack: VideoTrack
     private lateinit var localAudioTrack: AudioTrack
     private lateinit var localStream: MediaStream
@@ -79,7 +80,7 @@ class WebRtcClient(
         return peerConnectionFactory.createPeerConnection(iceServer, observer)!!
     }
 
-    fun initSurfaceViewRendered(viewRenderer: SurfaceViewRenderer) {
+    private fun initSurfaceViewRendered(viewRenderer: SurfaceViewRenderer) {
         viewRenderer.setEnableHardwareScaler(true)
         viewRenderer.setMirror(true)
         viewRenderer.init(eglBaseContext, null)
@@ -113,7 +114,17 @@ class WebRtcClient(
         localStream.addTrack(localVideoTrack)
         localStream.addTrack(localAudioTrack)
 
+        setAudioOutputToSpeaker(view.context)
+
         peerConnection.addStream(localStream)
+    }
+
+    private fun setAudioOutputToSpeaker(context: Context) {
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        // Set audio mode to MODE_IN_COMMUNICATION for WebRTC audio
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        // Set audio routing to speaker
+        audioManager.isSpeakerphoneOn = true
     }
 
     fun initRemoteSurfaceView(view: SurfaceViewRenderer) {
