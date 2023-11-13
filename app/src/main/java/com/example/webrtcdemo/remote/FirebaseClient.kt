@@ -1,7 +1,9 @@
 package com.example.webrtcdemo.remote
 
+import com.example.webrtcdemo.utils.CameraModel
 import com.example.webrtcdemo.utils.DataModel
 import com.example.webrtcdemo.utils.ErrorCallBack
+import com.example.webrtcdemo.utils.NewCameraCallBack
 import com.example.webrtcdemo.utils.NewEventCallBack
 import com.example.webrtcdemo.utils.SuccessCallBack
 import com.google.firebase.database.DataSnapshot
@@ -16,6 +18,7 @@ class FirebaseClient {
 
     companion object {
         const val LATEST_EVENT_FIELD_NAME = "latest_event"
+        const val CAMERA_EVENT_FIELD_NAME = "camera_event"
     }
 
     private val gson: Gson = Gson()
@@ -62,6 +65,42 @@ class FirebaseClient {
 
             override fun onCancelled(error: DatabaseError) {
             }
+        })
+    }
+
+    fun observeCameraSwitchEvent(newEventCallBack: NewCameraCallBack) {
+        dbRef.child(currentUserName).child(CAMERA_EVENT_FIELD_NAME).addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                try {
+                    val cameraModel = gson.fromJson(snapshot.value.toString(), CameraModel::class.java)
+                    cameraModel?.let {
+                        newEventCallBack.onCameraSwitch(cameraModel)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+    }
+
+    fun sendCameraMessageToOtherUser(cameraModel: CameraModel, errorCallBack: ErrorCallBack) {
+        dbRef.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.child(cameraModel.target).exists()) {
+                    dbRef.child(cameraModel.target).child(CAMERA_EVENT_FIELD_NAME)
+                        .setValue(gson.toJson(cameraModel))
+                } else {
+                    errorCallBack.onError()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                errorCallBack.onError()
+            }
+
         })
     }
 }

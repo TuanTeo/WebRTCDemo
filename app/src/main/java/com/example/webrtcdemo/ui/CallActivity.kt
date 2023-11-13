@@ -1,16 +1,17 @@
 package com.example.webrtcdemo.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.webrtcdemo.R
 import com.example.webrtcdemo.databinding.ActivityCallBinding
 import com.example.webrtcdemo.repository.MainRepository
+import com.example.webrtcdemo.utils.CameraModel
 import com.example.webrtcdemo.utils.DataModel
 import com.example.webrtcdemo.utils.DataModelType
 import com.example.webrtcdemo.utils.ErrorCallBack
+import com.example.webrtcdemo.utils.NewCameraCallBack
 import com.example.webrtcdemo.utils.NewEventCallBack
 
 class CallActivity : AppCompatActivity(), MainRepository.Listener {
@@ -53,11 +54,23 @@ class CallActivity : AppCompatActivity(), MainRepository.Listener {
                 }
             }
         })
+        MainRepository.getInstance().subscribeSwitchCameraEvent(object: NewCameraCallBack{
+            override fun onCameraSwitch(cameraModel: CameraModel) {
+                binding.svrRemoteView.setMirror(cameraModel.isFrontCamera)
+            }
+        })
 
         binding.btnSwitchCamera.setOnClickListener {
             MainRepository.getInstance().switchCamera()
             binding.svrLocalView.setMirror(isBackCamera)
             isBackCamera = !isBackCamera
+
+            MainRepository.getInstance()
+                .sendSwitchCameraEvent(!isBackCamera, object : ErrorCallBack {
+                    override fun onError() {
+                        Toast.makeText(applicationContext, "Couldn't find the target user!", Toast.LENGTH_SHORT).show()
+                    }
+                })
         }
         binding.btnMic.setOnClickListener {
             isMutedAudio = !isMutedAudio

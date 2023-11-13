@@ -2,9 +2,11 @@ package com.example.webrtcdemo.repository
 
 import android.content.Context
 import com.example.webrtcdemo.remote.FirebaseClient
+import com.example.webrtcdemo.utils.CameraModel
 import com.example.webrtcdemo.utils.DataModel
 import com.example.webrtcdemo.utils.DataModelType
 import com.example.webrtcdemo.utils.ErrorCallBack
+import com.example.webrtcdemo.utils.NewCameraCallBack
 import com.example.webrtcdemo.utils.NewEventCallBack
 import com.example.webrtcdemo.utils.SuccessCallBack
 import com.example.webrtcdemo.webrtc.PeerConnectionObserver
@@ -147,6 +149,21 @@ class MainRepository private constructor() : WebRtcClient.Listener {
 
     fun setListener(listener: Listener) {
         this.listener = listener
+    }
+
+    fun sendSwitchCameraEvent(isFrontCamera: Boolean, errorCallBack: ErrorCallBack) {
+        firebaseClient.sendCameraMessageToOtherUser(
+            CameraModel(targetUsername, currentUsername, isFrontCamera),
+            errorCallBack
+        )
+    }
+
+    fun subscribeSwitchCameraEvent(callBack: NewCameraCallBack) {
+        firebaseClient.observeCameraSwitchEvent(object: NewCameraCallBack {
+            override fun onCameraSwitch(cameraModel: CameraModel) {
+                callBack.onCameraSwitch(cameraModel)
+            }
+        })
     }
 
     interface Listener {
