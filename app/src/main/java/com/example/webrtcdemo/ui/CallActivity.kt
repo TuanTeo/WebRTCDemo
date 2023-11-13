@@ -15,6 +15,7 @@ import com.example.webrtcdemo.utils.NewEventCallBack
 
 class CallActivity : AppCompatActivity(), MainRepository.Listener {
 
+    private var isBackCamera: Boolean = false
     lateinit var binding: ActivityCallBinding
     private var isMutedAudio = false
     private var isMutedVideo = false
@@ -55,6 +56,8 @@ class CallActivity : AppCompatActivity(), MainRepository.Listener {
 
         binding.btnSwitchCamera.setOnClickListener {
             MainRepository.getInstance().switchCamera()
+            binding.svrLocalView.setMirror(isBackCamera)
+            isBackCamera = !isBackCamera
         }
         binding.btnMic.setOnClickListener {
             isMutedAudio = !isMutedAudio
